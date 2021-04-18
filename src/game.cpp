@@ -1,10 +1,9 @@
 #include "game.h"
-#include <iostream>
 #include "SDL.h"
+#include <iostream>
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
-    : snake(grid_width, grid_height),
-      engine(dev()),
+    : snake(grid_width, grid_height), engine(dev()),
       random_w(0, static_cast<int>(grid_width - 1)),
       random_h(0, static_cast<int>(grid_height - 1)) {
   PlaceFood();
@@ -19,13 +18,17 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   int frame_count = 0;
   bool running = true;
 
+  uint8_t pauseGame = 0;
+
   while (running) {
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
-    controller.HandleInput(running, snake);
-    Update();
-    renderer.Render(snake, food);
+    controller.HandleInput(running, snake, pauseGame);
+    if (!pauseGame) {
+      Update();
+      renderer.Render(snake, food);
+    }
 
     frame_end = SDL_GetTicks();
 
@@ -36,7 +39,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 
     // After every second, update the window title.
     if (frame_end - title_timestamp >= 1000) {
-      renderer.UpdateWindowTitle(score, frame_count);
+      renderer.UpdateWindowTitle(score, frame_count, pauseGame);
       frame_count = 0;
       title_timestamp = frame_end;
     }
@@ -66,7 +69,8 @@ void Game::PlaceFood() {
 }
 
 void Game::Update() {
-  if (!snake.alive) return;
+  if (!snake.alive)
+    return;
 
   snake.Update();
 
