@@ -1,11 +1,11 @@
-#include <iostream>
+#include "SDL.h"
 #include "controller.h"
 #include "game.h"
 #include "renderer.h"
-#include "SDL.h"
+#include <iostream>
 
-int main(int argc, char *argv[]){
-//int main() {
+int main(int argc, char *argv[]) {
+  // int main() {
   constexpr std::size_t kFramesPerSecond{60};
   constexpr std::size_t kMsPerFrame{1000 / kFramesPerSecond};
   constexpr std::size_t kScreenWidth{640};

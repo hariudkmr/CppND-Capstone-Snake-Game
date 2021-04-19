@@ -5,10 +5,8 @@
 Renderer::Renderer(const std::size_t screen_width,
                    const std::size_t screen_height,
                    const std::size_t grid_width, const std::size_t grid_height)
-    : screen_width(screen_width),
-      screen_height(screen_height),
-      grid_width(grid_width),
-      grid_height(grid_height) {
+    : screen_width(screen_width), screen_height(screen_height),
+      grid_width(grid_width), grid_height(grid_height) {
   // Initialize SDL
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     std::cerr << "SDL could not initialize.\n";
@@ -38,7 +36,8 @@ Renderer::~Renderer() {
   SDL_Quit();
 }
 
-void Renderer::Render(Snake const &snake, SDL_Point const &food, Wall const &wall) {
+void Renderer::Render(Snake const &snake, SDL_Point const &food,
+                      Wall const &wall) {
   SDL_Rect block;
   block.w = screen_width / grid_width;
   block.h = screen_height / grid_height;
@@ -55,9 +54,9 @@ void Renderer::Render(Snake const &snake, SDL_Point const &food, Wall const &wal
 
   SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xFF, 0x00, 0xFF);
   for (SDL_Point const &point : wall.body) {
-	  block.x = point.x * block.w;
-	  block.y = point.y * block.h;
-	  SDL_RenderFillRect(sdl_renderer, &block);
+    block.x = point.x * block.w;
+    block.y = point.y * block.h;
+    SDL_RenderFillRect(sdl_renderer, &block);
   }
 
   // Render snake's body
@@ -82,18 +81,19 @@ void Renderer::Render(Snake const &snake, SDL_Point const &food, Wall const &wal
   SDL_RenderPresent(sdl_renderer);
 }
 
-void Renderer::UpdateWindowTitle(int score, int fps, float speed, int &PauseReq, bool restartReq) {
-	std::string title{ "Snake Score: " + std::to_string(score) + " FPS: " + std::to_string(fps) + "Speed :" + std::to_string(speed) };
+void Renderer::UpdateWindowTitle(int score, int fps, float speed, int &PauseReq,
+                                 bool restartReq) {
+  std::string title{"Snake Score: " + std::to_string(score) + " FPS: " +
+                    std::to_string(fps) + "Speed :" + std::to_string(speed)};
 
-	if(restartReq)
-		title += "   ---Press r to start new game---";
-	else {
-		if (PauseReq)
-			title += "   ---Game Paused. Press p to resume---";
-		else
-			title += "  ---Press p to pause---";
-	}
+  if (restartReq)
+    title += "   ---Press r to start new game---";
+  else {
+    if (PauseReq)
+      title += "   ---Game Paused. Press p to resume---";
+    else
+      title += "  ---Press p to pause---";
+  }
 
-
-	SDL_SetWindowTitle(sdl_window, title.c_str());
+  SDL_SetWindowTitle(sdl_window, title.c_str());
 }

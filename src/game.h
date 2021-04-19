@@ -1,20 +1,20 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <random>
-#include <thread>
-#include <mutex>
-#include <condition_variable>
 #include "SDL.h"
 #include "controller.h"
 #include "renderer.h"
 #include "snake.h"
 #include "wall.h"
+#include <condition_variable>
+#include <mutex>
+#include <random>
+#include <thread>
 
 enum class GameState { kActive, kDead };
 
 class Game {
- public:
+public:
   Game(std::size_t grid_width, std::size_t grid_height);
   void Run(Controller const &controller, Renderer &renderer,
            std::size_t target_frame_duration);
@@ -23,7 +23,7 @@ class Game {
 
   void timerThreadFunction(bool &running);
 
- private:
+private:
   Snake snake;
   Wall wall;
   SDL_Point food;
@@ -37,13 +37,13 @@ class Game {
   int round{0};
 
   void PlaceFood();
-  //void Update();
+  // void Update();
   GameState Update();
 
   void restart();
   void updateScoreHistory();
 
-  bool slowSpeed{ false };
+  bool slowSpeed{false};
   std::mutex _mutex;
   std::condition_variable _condvar;
 };
