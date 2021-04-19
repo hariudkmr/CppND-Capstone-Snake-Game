@@ -1,7 +1,7 @@
+#include "src/controller.h"
+#include "src/game.h"
+#include "src/renderer.h"
 #include <iostream>
-#include "controller.h"
-#include "game.h"
-#include "renderer.h"
 
 int main() {
   constexpr std::size_t kFramesPerSecond{60};
