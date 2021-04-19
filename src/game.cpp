@@ -1,5 +1,6 @@
 #include "game.h"
 #include "SDL.h"
+#include <fstream>
 #include <iostream>
 
 Game::Game(std::size_t grid_width, std::size_t grid_height)
@@ -15,21 +16,41 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   Uint32 frame_start;
   Uint32 frame_end;
   Uint32 frame_duration;
+  GameState gameState;
   int frame_count = 0;
   bool running = true;
 
   uint8_t pauseGame = 0;
+  bool restartGame = false;
+  bool bUpdateGameScore = true; // to track the scoresheet to be updated or not
 
   while (running) {
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
-    controller.HandleInput(running, snake, pauseGame);
+    controller.HandleInput(running, snake, pauseGame, restartGame);
     if (!pauseGame) {
-      Update();
-      renderer.Render(snake, food);
-    }
+      gameState = Update();
 
+      if (gameState == GameState::kActive) {
+        renderer.Render(snake, food);
+      } else {
+        if (bUpdateGameScore) {
+          updateScoreHistory();
+          bUpdateGameScore = false;
+        }
+
+        if (restartGame) {
+          // reset the game parameters
+          // updateScore flag also set to true to record for new game
+          // reset the flag to monitor the reset request status
+          restart();
+
+          bUpdateGameScore = true;
+          restartGame = false;
+        }
+      }
+    }
     frame_end = SDL_GetTicks();
 
     // Keep track of how long each loop through the input/update/render cycle
@@ -68,9 +89,9 @@ void Game::PlaceFood() {
   }
 }
 
-void Game::Update() {
+GameState Game::Update() {
   if (!snake.alive)
-    return;
+    return GameState::kDead;
 
   snake.Update();
 
@@ -85,7 +106,34 @@ void Game::Update() {
     snake.GrowBody();
     snake.speed += 0.02;
   }
+  return GameState::kActive;
 }
 
 int Game::GetScore() const { return score; }
 int Game::GetSize() const { return snake.size; }
+/*  Game::restart
+        The Api will allow the game to be Restarted for Continuous Play
+        The restart method is used to reset the variables which contribute to
+   the overall state of the game
+*/
+void Game::restart() {
+  // reset snake attributes
+  snake.restart();
+  // make the snake alive
+  snake.alive = true;
+  // reset the speed and score
+  snake.speed = 0.1f;
+  score = 0;
+}
+/*
+Game::updateScoreHistory will record in a test file all the score history.
+This can be further developed to show the last scores on the screen.
+Right now it just records the data on a file
+*/
+void Game::updateScoreHistory() {
+  // add score to scoresheet file
+  std::ofstream scoreFile;
+  scoreFile.open("Scoresheet.txt", std::ios::app | std::ios::out);
+  scoreFile << " Round " << round++ << " Score  " << GetScore() << "\n";
+  scoreFile.close();
+}

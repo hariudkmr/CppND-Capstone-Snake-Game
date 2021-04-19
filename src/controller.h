@@ -5,7 +5,8 @@
 
 class Controller {
 public:
-  void HandleInput(bool &running, Snake &snake, uint8_t &pauseGame) const;
+  void HandleInput(bool &running, Snake &snake, uint8_t &pauseGame,
+                   bool &restartGame) const;
 
 private:
   void ChangeDirection(Snake &snake, Snake::Direction input,

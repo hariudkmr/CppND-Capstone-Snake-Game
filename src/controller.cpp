@@ -10,8 +10,8 @@ void Controller::ChangeDirection(Snake &snake, Snake::Direction input,
   return;
 }
 
-void Controller::HandleInput(bool &running, Snake &snake,
-                             uint8_t &pauseGame) const {
+void Controller::HandleInput(bool &running, Snake &snake, uint8_t &pauseGame,
+                             bool &restartGame) const {
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
     if (e.type == SDL_QUIT) {
@@ -37,11 +37,11 @@ void Controller::HandleInput(bool &running, Snake &snake,
         break;
 
       case SDLK_p:
-        pauseGame = 0x1;
+        pauseGame ^= 0x1;
         break;
 
       case SDLK_r:
-        pauseGame = 0;
+        restartGame = true;
         break;
       }
     }
