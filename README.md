@@ -26,9 +26,8 @@ In this project, you can build your own C++ application or extend this Snake gam
 ## Basic Build Instructions
 
 1. Clone this repo.
-2. Make a build directory in the top level directory: `mkdir build && cd build`
-3. Compile/Build: `make debug`
-4. Run it: `./build/SnakeGame`.
+2. Compile/Build: `make debug`
+3. Run it: `./build/SnakeGame`.
 
 
 ## CC Attribution-ShareAlike 4.0 International
